@@ -21,6 +21,18 @@
             animation: shine 3s infinite;
         }
         .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        
+        /* Animation de chargement */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-[#fafafa] font-sans text-slate-900 overflow-x-hidden">
@@ -50,63 +62,75 @@
 
        <div class="grid md:grid-cols-2 gap-8 items-center">
 
-    <!-- VERSION GRATUITE -->
-    <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
-        <h3 class="font-bold text-xl mb-2">Version Free</h3>
-        <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
-        <ul class="space-y-4 mb-10">
-            <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Modèle IA Basique</li>
-            <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> 10 crédits offerts / jour</li>
-            <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Vitesse de réponse de 10s</li>
-        </ul>
+        <!-- VERSION GRATUITE -->
+        <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
+            <h3 class="font-bold text-xl mb-2">Version Free</h3>
+            <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
+            <ul class="space-y-4 mb-10">
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Modèle IA Basique</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> 10 crédits offerts / jour</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Vitesse de réponse de 10s</li>
+            </ul>
 
-        <a href="https://vr000549.github.io/HomeWorkSolve/" class="block">
-            <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all active:scale-95 shadow-xl">
-                RESTER SUR LA VERSION GRATUITE
-            </button>
-        </a>
-    </div>
-
-    <!-- VERSION PREMIUM -->
-    <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
-        <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
-        <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
-
-       
-
-                <div class="flex items-baseline gap-2 mb-6">
-                    <span id="price-display" class="text-6xl font-black">2,39€</span>
-                    <span id="period-display" class="text-slate-400 font-bold">/mois</span>
-                </div>
-                
-                <div id="math-bonus" class="bg-indigo-500/20 p-4 rounded-2xl mb-8 border border-indigo-500/30">
-                    <p class="text-xs font-bold text-indigo-300 uppercase mb-1 underline">Calcul de rentabilité :</p>
-                    <p class="text-sm italic" id="math-text">Prix d'un café par mois.</p>
-                </div>
-
-                <ul class="space-y-4 mb-10">
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Gemini 1.5 Pro (Le meilleur du marché)</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Explications vocales</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Zéro attente</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Support prioritaire</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Crédits Illimités</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Historique</li>
-                    <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Vitesse de réponse de 1s</li>
-                </ul>
-
-                <button class="w-full py-5 bg-white text-black rounded-2xl font-black text-xl hover:bg-indigo-400 hover:text-white transition-all active:scale-95 shadow-xl">
-                    S'ABONNER MAINTENANT
+            <a href="https://vr000549.github.io/HomeWorkSolve/" class="block">
+                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all active:scale-95 shadow-xl">
+                    RESTER SUR LA VERSION GRATUITE
                 </button>
+            </a>
+        </div>
+
+        <!-- VERSION PREMIUM -->
+        <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
+            <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
+            <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
+
+            <div class="flex items-baseline gap-2 mb-6">
+                <span id="price-display" class="text-6xl font-black">2,39€</span>
+                <span id="period-display" class="text-slate-400 font-bold">/mois</span>
             </div>
+            
+            <div id="math-bonus" class="bg-indigo-500/20 p-4 rounded-2xl mb-8 border border-indigo-500/30">
+                <p class="text-xs font-bold text-indigo-300 uppercase mb-1 underline">Calcul de rentabilité :</p>
+                <p class="text-sm italic" id="math-text">Prix d'un café par mois.</p>
+            </div>
+
+            <ul class="space-y-4 mb-10">
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Gemini 1.5 Pro (Le meilleur du marché)</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Explications vocales</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Zéro attente</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Support prioritaire</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Crédits Illimités</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Historique</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Vitesse de réponse de 1s</li>
+            </ul>
+
+            <!-- Bouton modifié pour déclencher le script -->
+            <button id="subscribeBtn" onclick="handleSubscription()" class="w-full py-5 bg-white text-black rounded-2xl font-black text-xl hover:bg-indigo-400 hover:text-white transition-all active:scale-95 shadow-xl flex justify-center items-center gap-3">
+                <span>S'ABONNER MAINTENANT</span>
+            </button>
+        </div>
         </div>
     </section>
 
     <footer class="py-12 text-center border-t border-slate-200">
-        <button onclick="window.close()" class="text-slate-400 font-bold hover:text-indigo-600 transition-all mb-4 block mx-auto">← Quitter le mode Premium</button>
+        <button onclick="window.location.href='https://vr000549.github.io/HomeWorkSolve/'" class="text-slate-400 font-bold hover:text-indigo-600 transition-all mb-4 block mx-auto">← Quitter le mode Premium</button>
         <p class="text-xs font-black tracking-widest text-slate-300 uppercase italic">HomeworkSolve • Propulsé par Ilan P. • 2026</p>
     </footer>
 
     <script>
+        // ---------------------------------------------------------
+        // CONFIGURATION PAYPAL ET WEBHOOK
+        // ---------------------------------------------------------
+        // 1. Remplace par ton lien PayPal.me ou lien de paiement Stripe
+        const PAYPAL_LINK = "https://www.paypal.com/paypal.me/Redarc675/2.39"; 
+        
+        // 2. (Optionnel) Pour recevoir l'IP, crée un Webhook Discord :
+        // - Va dans un serveur Discord -> Paramètres du serveur -> Intégrations -> Webhooks -> Créer
+        // - Copie l'URL et colle-la ci-dessous.
+        // Si tu ne veux pas faire ça, laisse vide, mais tu devras demander l'IP au client.
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1456724854098235566/GLVfT1iNPKRg7S1LZCqBIY88gWja_j7quGAJ7xhThIZCMuA32fwTI4vGgGp60NHyT2Kp"; 
+        // ---------------------------------------------------------
+
         function setPrice(type) {
             const price = document.getElementById('price-display');
             const period = document.getElementById('period-display');
@@ -126,6 +150,48 @@
                 math.innerText = "Prix d'un café par mois pour des notes de génie.";
                 btnMonth.classList.add('tab-active');
                 btnYear.classList.remove('tab-active');
+            }
+        }
+
+        async function handleSubscription() {
+            const btn = document.getElementById('subscribeBtn');
+            const originalText = btn.innerHTML;
+            
+            // 1. Changement d'état du bouton (Chargement)
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loader"></div> <span class="ml-2">Sécurisation...</span>';
+
+            try {
+                // 2. Récupération de l'IP
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const userIp = data.ip;
+
+                console.log("IP Client:", userIp);
+
+                // 3. Envoi de l'IP vers ton Webhook (Discord ou Make)
+                // Cela te permet de recevoir l'IP pour l'ajouter manuellement ou automatiquement via Make.com
+                if (WEBHOOK_URL) {
+                    await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: "HomeWork Bot",
+                            content: `💰 **Nouvel Abonnement Initié !**\nIP à ajouter : \`${userIp}\`\nDate : ${new Date().toLocaleString()}`
+                        })
+                    });
+                }
+
+                // 4. Redirection vers PayPal après 1.5 seconde
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Redirection...';
+                    window.location.href = PAYPAL_LINK;
+                }, 1500);
+
+            } catch (error) {
+                console.error("Erreur:", error);
+                // En cas d'erreur (bloqueur de pub par ex), on redirige quand même
+                window.location.href = PAYPAL_LINK;
             }
         }
     </script>
