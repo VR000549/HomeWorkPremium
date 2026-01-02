@@ -3,69 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeWork Premium - L'élite</title>
+    <title>HomeWorkSolve Premium - L'élite des étudiants</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- TON SCRIPT PAYPAL (SDK) -->
+    <!-- SDK PAYPAL OFFICIEL -->
     <script src="https://www.paypal.com/sdk/js?client-id=Adpd6qG7Tuftlr58Qv6rNHC6p2JsBiLYhxn8rLlrBb0F6vKRc6TpEsubIv4v9juMajVjp7PXGZ49UTrb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
 
     <style>
-        @keyframes shine { from { left: -100%; } to { left: 100%; } }
-        .shine-effect::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s; animation: shine 3s infinite;
+        @keyframes shine {
+            from { left: -100%; }
+            to { left: 100%; }
         }
+        .shine-effect::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+            animation: shine 3s infinite;
+        }
+        .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-[#fafafa] font-sans text-slate-900 overflow-x-hidden">
 
-    <header class="text-center mb-8">
-        <div class="inline-block bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-xs font-bold mb-4 animate-bounce">
-            OFFRE SPÉCIALE ÉTUDIANTS
+    <header class="pt-16 pb-8 px-6 text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-bold mb-6 animate-bounce">
+            <i class="fas fa-fire"></i> OFFRE DE LANCEMENT 2026
         </div>
-        <h1 class="text-4xl md:text-6xl font-black mb-2 italic">PASSE <span class="text-indigo-600">PREMIUM.</span></h1>
-        <p class="text-slate-500">L'intelligence artificielle illimitée pour tes notes.</p>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 italic">
+            DEVIENS <span class="text-indigo-600">IMBATTABLE.</span>
+        </h1>
+        <p class="text-xl text-slate-500 font-medium max-w-2xl mx-auto">
+            Pourquoi galérer quand tu peux avoir la puissance de Gemini 1.5 Pro dans ta poche ?
+        </p>
     </header>
 
-    <div class="bg-white rounded-[2rem] shadow-2xl p-8 max-w-sm w-full border-4 border-indigo-50 relative overflow-hidden">
-        
-        <!-- Badge -->
-        <div class="absolute top-0 right-0 bg-indigo-600 text-white font-bold px-4 py-2 rounded-bl-2xl text-xs">
-            POPULAIRE
-        </div>
-
-        <div class="text-center mb-6">
-            <h2 class="text-xl font-bold text-slate-800">Pass Major</h2>
-            <div class="flex items-baseline justify-center gap-1 mt-2">
-                <span class="text-5xl font-black text-slate-900">2,39€</span>
-                <span class="text-slate-400 font-bold">/mois</span>
+    <section class="px-6 py-12 max-w-5xl mx-auto">
+        <!-- Switch Mensuel / Annuel (Visuel uniquement ici car le bouton PayPal a un Plan ID fixe) -->
+        <div class="flex justify-center mb-12">
+            <div class="bg-slate-200 p-1 rounded-2xl flex items-center relative w-72">
+                <button id="btn-month" onclick="setPrice('month')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all tab-active">Mensuel</button>
+                <button id="btn-year" onclick="setPrice('year')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all italic">Annuel</button>
+                <div id="save-badge" class="absolute -top-4 -right-8 bg-green-500 text-white text-[10px] px-2 py-1 rounded-lg font-black rotate-12 shadow-lg">
+                    -55% RENTABLE
+                </div>
             </div>
-            <p class="text-xs text-slate-400 mt-2">Annulable à tout moment</p>
         </div>
 
-        <ul class="space-y-3 mb-8 text-sm text-slate-600">
-            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500"></i> Scan & Résolution Illimités</li>
-            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500"></i> Mode IA Expert (Plus précis)</li>
-            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500"></i> <b>Explications détaillées</li>
-            <li class="flex items-center gap-3"><i class="fas fa-check-circle text-green-500"></i> Accès à l'Historique</li>
-        </ul>
+       <div class="grid md:grid-cols-2 gap-8 items-center">
 
-        <!-- ZONE DU BOUTON PAYPAL -->
-        <div id="paypal-button-container-P-1M467222SD327415YNFMBTYA" class="relative z-10"></div>
-        
-    </div>
+        <!-- VERSION GRATUITE -->
+        <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
+            <h3 class="font-bold text-xl mb-2">Version Free</h3>
+            <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
+            <ul class="space-y-4 mb-10">
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Modèle IA Basique</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> 10 crédits offerts / jour</li>
+                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Vitesse de réponse standard</li>
+            </ul>
 
-    <button onclick="window.location.href='https://vr000549.github.io/HomeWorkSolve/'" class="mt-8 text-slate-400 text-sm font-bold hover:text-indigo-600 transition">
-        Non merci, je reste en version gratuite
-    </button>
+            <a href="https://vr000549.github.io/HomeWorkSolve/" class="block">
+                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all active:scale-95 shadow-xl">
+                    RESTER SUR LA VERSION GRATUITE
+                </button>
+            </a>
+        </div>
 
-    <footer class="mt-12 text-center text-gray-300 text-[10px]">
-        Sécurisé par PayPal • HomeWorkSolve © 2026
+        <!-- VERSION PREMIUM -->
+        <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
+            <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
+            <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
+
+            <div class="flex items-baseline gap-2 mb-6">
+                <span id="price-display" class="text-6xl font-black">2,39€</span>
+                <span id="period-display" class="text-slate-400 font-bold">/mois</span>
+            </div>
+            
+            <div id="math-bonus" class="bg-indigo-500/20 p-4 rounded-2xl mb-8 border border-indigo-500/30">
+                <p class="text-xs font-bold text-indigo-300 uppercase mb-1 underline">Rentabilité :</p>
+                <p class="text-sm italic" id="math-text">Prix d'un café par mois pour des notes de génie.</p>
+            </div>
+
+            <ul class="space-y-4 mb-8">
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> <b>Gemini 1.5 Pro</b> (Le meilleur du marché)</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Crédits & Scans <b>Illimités</b></li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Historique complet</li>
+                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Réponses détaillées</li>
+            </ul>
+
+            <!-- ZONE DU BOUTON PAYPAL INTÉGRÉ -->
+            <div class="w-full mt-6 bg-white p-2 rounded-xl">
+                 <div id="paypal-button-container-P-1M467222SD327415YNFMBTYA"></div>
+            </div>
+            <p class="text-[10px] text-gray-400 text-center mt-2">Paiement sécurisé par PayPal</p>
+            
+        </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center border-t border-slate-200">
+        <button onclick="window.location.href='https://vr000549.github.io/HomeWorkSolve/'" class="text-slate-400 font-bold hover:text-indigo-600 transition-all mb-4 block mx-auto">← Retour à l'application</button>
+        <p class="text-xs font-black tracking-widest text-slate-300 uppercase italic">HomeworkSolve • Propulsé par Ilan P. • 2026</p>
     </footer>
 
-    <!-- SCRIPT DE CONFIGURATION -->
+    <!-- SCRIPT D'INTERFACE (PRIX) -->
+    <script>
+        function setPrice(type) {
+            const price = document.getElementById('price-display');
+            const period = document.getElementById('period-display');
+            const btnMonth = document.getElementById('btn-month');
+            const btnYear = document.getElementById('btn-year');
+
+            if (type === 'year') {
+                // Juste pour l'affichage visuel
+                price.innerText = "13,00€";
+                period.innerText = "/an";
+                btnYear.classList.add('tab-active');
+                btnMonth.classList.remove('tab-active');
+                alert("Note : Le bouton PayPal ci-dessous est configuré pour l'offre mensuelle à 2,39€ pour le moment.");
+            } else {
+                price.innerText = "2,39€";
+                period.innerText = "/mois";
+                btnMonth.classList.add('tab-active');
+                btnYear.classList.remove('tab-active');
+            }
+        }
+    </script>
+
+    <!-- SCRIPT PAYPAL (LOGIQUE DE PAIEMENT) -->
     <script>
       paypal.Buttons({
           style: {
@@ -76,14 +144,14 @@
           },
           createSubscription: function(data, actions) {
             return actions.subscription.create({
-              /* Création de l'abonnement avec ton ID */
+              /* ID de ton Plan PayPal */
               plan_id: 'P-1M467222SD327415YNFMBTYA'
             });
           },
           onApprove: function(data, actions) {
-            // REDIRECTION APRÈS PAIEMENT
-            // C'est ici qu'on renvoie vers ton app principale pour activer le premium
-            window.location.href = "https://vr000549.github.io/HomeWorkSolve/?upgrade_success=true";
+            // REDIRECTION APRES SUCCES
+            // Modifie le lien ci-dessous si ton site n'est pas exactement celui-là
+            window.location.href = "https://HomeWorkSolve.fr/?upgrade_success=true";
           }
       }).render('#paypal-button-container-P-1M467222SD327415YNFMBTYA');
     </script>
