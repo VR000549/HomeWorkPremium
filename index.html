@@ -7,28 +7,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SDK PAYPAL OFFICIEL -->
+    <!-- SDK PAYPAL -->
     <script src="https://www.paypal.com/sdk/js?client-id=Adpd6qG7Tuftlr58Qv6rNHC6p2JsBiLYhxn8rLlrBb0F6vKRc6TpEsubIv4v9juMajVjp7PXGZ49UTrb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <!-- SDK SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        @keyframes shine {
-            from { left: -100%; }
-            to { left: 100%; }
-        }
+        @keyframes shine { from { left: -100%; } to { left: 100%; } }
         .shine-effect::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s;
-            animation: shine 3s infinite;
+            transition: 0.5s; animation: shine 3s infinite;
         }
         .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="bg-[#fafafa] font-sans text-slate-900 overflow-x-hidden">
 
+    <!-- HEADER -->
     <header class="pt-16 pb-8 px-6 text-center max-w-4xl mx-auto">
         <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-bold mb-6 animate-bounce">
             <i class="fas fa-fire"></i> OFFRE DE LANCEMENT 2026
@@ -42,119 +38,100 @@
     </header>
 
     <section class="px-6 py-12 max-w-5xl mx-auto">
-        <!-- Switch Mensuel / Annuel (Visuel uniquement ici car le bouton PayPal a un Plan ID fixe) -->
         <div class="flex justify-center mb-12">
             <div class="bg-slate-200 p-1 rounded-2xl flex items-center relative w-72">
                 <button id="btn-month" onclick="setPrice('month')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all tab-active">Mensuel</button>
                 <button id="btn-year" onclick="setPrice('year')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all italic">Annuel</button>
-                <div id="save-badge" class="absolute -top-4 -right-8 bg-green-500 text-white text-[10px] px-2 py-1 rounded-lg font-black rotate-12 shadow-lg">
-                    -55% RENTABLE
-                </div>
             </div>
         </div>
 
        <div class="grid md:grid-cols-2 gap-8 items-center">
-
-        <!-- VERSION GRATUITE -->
+        <!-- GRATUIT -->
         <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
             <h3 class="font-bold text-xl mb-2">Version Free</h3>
             <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
             <ul class="space-y-4 mb-10">
                 <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Modèle IA Basique</li>
                 <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> 10 crédits offerts / jour</li>
-                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Vitesse de réponse standard</li>
             </ul>
-
-            <a href="https://vr000549.github.io/HomeWorkSolve/" class="block">
-                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all active:scale-95 shadow-xl">
-                    RESTER SUR LA VERSION GRATUITE
+            <a href="https://homeworksolve.fr" class="block">
+                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all shadow-xl">
+                    RESTER GRATUIT
                 </button>
             </a>
         </div>
 
-        <!-- VERSION PREMIUM -->
+        <!-- PREMIUM -->
         <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
             <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
             <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
-
             <div class="flex items-baseline gap-2 mb-6">
                 <span id="price-display" class="text-6xl font-black">2,39€</span>
                 <span id="period-display" class="text-slate-400 font-bold">/mois</span>
             </div>
             
-            <div id="math-bonus" class="bg-indigo-500/20 p-4 rounded-2xl mb-8 border border-indigo-500/30">
-                <p class="text-xs font-bold text-indigo-300 uppercase mb-1 underline">Rentabilité :</p>
-                <p class="text-sm italic" id="math-text">Prix d'un café par mois pour des notes de génie.</p>
-            </div>
-
             <ul class="space-y-4 mb-8">
-                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> <b>Gemini 1.5 Pro</b> (Le meilleur du marché)</li>
-                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Crédits & Scans <b>Illimités</b></li>
-                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Historique complet</li>
-                <li class="flex items-center gap-4"><div class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div> Réponses détaillées</li>
+                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 1.5 Pro</li>
+                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Illimité</li>
+                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Historique Cloud (Supabase)</li>
             </ul>
 
-            <!-- ZONE DU BOUTON PAYPAL INTÉGRÉ -->
+            <!-- BOUTON PAYPAL -->
             <div class="w-full mt-6 bg-white p-2 rounded-xl">
                  <div id="paypal-button-container-P-1M467222SD327415YNFMBTYA"></div>
             </div>
-            <p class="text-[10px] text-gray-400 text-center mt-2">Paiement sécurisé par PayPal</p>
-            
         </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-slate-200">
-        <button onclick="window.location.href='https://vr000549.github.io/HomeWorkSolve/'" class="text-slate-400 font-bold hover:text-indigo-600 transition-all mb-4 block mx-auto">← Retour à l'application</button>
-        <p class="text-xs font-black tracking-widest text-slate-300 uppercase italic">HomeworkSolve • Propulsé par Ilan P. • 2026</p>
-    </footer>
-
-    <!-- SCRIPT D'INTERFACE (PRIX) -->
+    <!-- SCRIPT LOGIQUE -->
     <script>
+        // --- CONFIGURATION SUPABASE ---
+        const supabaseUrl = 'TON_URL_SUPABASE'; // 🔴 REMPLACE ÇA
+        const supabaseKey = 'TA_CLE_ANON_KEY';  // 🔴 REMPLACE ÇA
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function generateLicenseKey() {
+            return 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        paypal.Buttons({
+            style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+            createSubscription: function(data, actions) {
+                return actions.subscription.create({
+                    plan_id: 'P-1M467222SD327415YNFMBTYA'
+                });
+            },
+            onApprove: async function(data, actions) {
+                // 1. Générer la clé
+                const newKey = generateLicenseKey();
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
+
+                // 2. Insérer dans Supabase
+                const { error } = await supabase
+                    .from('licenses')
+                    .insert([{ 
+                        key: newKey, 
+                        expires_at: expiryDate.toISOString(),
+                        is_active: true
+                    }]);
+
+                if (error) {
+                    alert("Erreur activation. Code réf: " + data.subscriptionID);
+                    console.error(error);
+                } else {
+                    // 3. Rediriger avec la clé
+                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                }
+            }
+        }).render('#paypal-button-container-P-1M467222SD327415YNFMBTYA');
+
         function setPrice(type) {
             const price = document.getElementById('price-display');
-            const period = document.getElementById('period-display');
-            const btnMonth = document.getElementById('btn-month');
-            const btnYear = document.getElementById('btn-year');
-
-            if (type === 'year') {
-                // Juste pour l'affichage visuel
-                price.innerText = "13,00€";
-                period.innerText = "/an";
-                btnYear.classList.add('tab-active');
-                btnMonth.classList.remove('tab-active');
-                alert("Note : Le bouton PayPal ci-dessous est configuré pour l'offre mensuelle à 2,39€ pour le moment.");
-            } else {
-                price.innerText = "2,39€";
-                period.innerText = "/mois";
-                btnMonth.classList.add('tab-active');
-                btnYear.classList.remove('tab-active');
-            }
+            if (type === 'year') { price.innerText = "13,00€"; alert("Offre annuelle pas encore active."); }
+            else { price.innerText = "2,39€"; }
         }
     </script>
-
-    <!-- SCRIPT PAYPAL (LOGIQUE DE PAIEMENT) -->
-    <script>
-      paypal.Buttons({
-          style: {
-              shape: 'pill',
-              color: 'gold',
-              layout: 'vertical',
-              label: 'subscribe'
-          },
-          createSubscription: function(data, actions) {
-            return actions.subscription.create({
-              /* ID de ton Plan PayPal */
-              plan_id: 'P-1M467222SD327415YNFMBTYA'
-            });
-          },
-          onApprove: function(data, actions) {
-            // REDIRECTION APRES SUCCES
-            // Modifie le lien ci-dessous si ton site n'est pas exactement celui-là
-            window.location.href = "https://HomeWorkSolve.fr/?upgrade_success=true";
-          }
-      }).render('#paypal-button-container-P-1M467222SD327415YNFMBTYA');
-    </script>
-
 </body>
 </html>
