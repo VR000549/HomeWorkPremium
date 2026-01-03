@@ -75,56 +75,75 @@
     </section>
 
     <script>
+        // CONFIGURATION
         const SUPABASE_URL = 'https://vaxxxlimcusqjoppnqzb.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable__0ibPusHK6BcKGZowZnSog__XNZY72G';
+        const PLAN_ID = 'P-0UN51170X42573430NFMSF3A'; // Ton nouveau Plan ID
 
-        let supabase;
+        var mySupabase; // Utilisation d'un nom unique pour éviter l'erreur "already declared"
 
         window.onload = function() {
+            // Initialisation de Supabase
             try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch (e) { console.error("Erreur Supabase:", e); }
+                mySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log("Supabase initialisé avec succès");
+            } catch (e) {
+                console.error("Erreur Supabase:", e);
+            }
 
+            // Initialisation de PayPal
             if (window.paypal) {
                 paypal.Buttons({
                     style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
                     createSubscription: function(data, actions) {
                         return actions.subscription.create({
-                            plan_id: 'P-0UN51170X42573430NFMSF3A' 
+                            plan_id: PLAN_ID
                         });
                     },
                     onApprove: async function(data, actions) {
-                        // 1. Générer une clé unique
+                        // Création de la clé de licence
                         const newKey = 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
                         const expiryDate = new Date();
-                        expiryDate.setDate(expiryDate.getDate() + 30);
+                        expiryDate.setDate(expiryDate.getDate() + 30); // Valide 30 jours
 
-                        // 2. Sauvegarder dans Supabase
-                        if (supabase) {
-                            await supabase.from('licenses').insert([{ 
+                        // Sauvegarde dans la base de données
+                        if (mySupabase) {
+                            const { error } = await mySupabase.from('licenses').insert([{ 
                                 key: newKey, 
                                 expires_at: expiryDate.toISOString(),
                                 is_active: true
                             }]);
+                            
+                            if (error) console.error("Erreur lors de l'insertion Supabase:", error);
                         }
 
-                        // 3. Rediriger l'utilisateur vers le site principal avec sa clé
+                        // Redirection avec la clé
                         window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
                     },
                     onError: function (err) {
-                        console.error('Erreur PayPal:', err);
+                        console.error('Erreur PayPal détectée:', err);
                     }
                 }).render('#paypal-button-container-P-0UN51170X42573430NFMSF3A');
+            } else {
+                console.error("Le SDK PayPal n'a pas pu être chargé.");
             }
         };
 
+        // Fonction pour changer l'affichage du prix
         function setPrice(type) {
             const price = document.getElementById('price-display');
+            const btnMonth = document.getElementById('btn-month');
+            const btnYear = document.getElementById('btn-year');
+
             if (type === 'year') { 
                 price.innerText = "39,00€"; 
-                alert("L'offre annuelle arrive bientôt !");
+                btnYear.classList.add('tab-active');
+                btnMonth.classList.remove('tab-active');
+                alert("L'offre annuelle sera bientôt disponible.");
             } else { 
                 price.innerText = "4,00€"; 
+                btnMonth.classList.add('tab-active');
+                btnYear.classList.remove('tab-active');
             }
         }
     </script>
