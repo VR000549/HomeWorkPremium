@@ -7,10 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 1. SDK PAYPAL (Vérifie que c'est le bon Client ID) -->
     <script src="https://www.paypal.com/sdk/js?client-id=Adpd6qG7Tuftlr58Qv6rNHC6p2JsBiLYhxn8rLlrBb0F6vKRc6TpEsubIv4v9juMajVjp7PXGZ49UTrb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
     
-    <!-- 2. SDK SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -20,12 +18,11 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
             transition: 0.5s; animation: shine 3s infinite; pointer-events: none;
         }
-        .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .tab-active { background: white !important; color: black !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="bg-[#fafafa] font-sans text-slate-900 overflow-x-hidden">
 
-    <!-- HEADER -->
     <header class="pt-16 pb-8 px-6 text-center max-w-4xl mx-auto">
         <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-bold mb-6 animate-bounce">
             <i class="fas fa-fire"></i> OFFRE DE LANCEMENT 2026
@@ -36,7 +33,6 @@
     </header>
 
     <section class="px-6 py-12 max-w-5xl mx-auto">
-        <!-- Switch Prix -->
         <div class="flex justify-center mb-12">
             <div class="bg-slate-200 p-1 rounded-2xl flex items-center relative w-72">
                 <button onclick="setPrice('month')" id="btn-month" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all tab-active">Mensuel</button>
@@ -45,7 +41,6 @@
         </div>
 
        <div class="grid md:grid-cols-2 gap-8 items-center">
-        <!-- GRATUIT -->
         <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
             <h3 class="font-bold text-xl mb-2">Version Free</h3>
             <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
@@ -58,88 +53,99 @@
             </a>
         </div>
 
-        <!-- PREMIUM -->
         <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
             <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
             <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
             <div class="flex items-baseline gap-2 mb-6">
-                <span id="price-display" class="text-6xl font-black">2,39€</span>
+                <span id="price-display" class="text-6xl font-black">4,00€</span>
                 <span id="period-display" class="text-slate-400 font-bold">/mois</span>
             </div>
             
             <ul class="space-y-4 mb-8">
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 1.5 Pro</li>
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Illimité</li>
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Historique Cloud</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 2.0 Flash (Ultra Rapide)</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Scans Illimités</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Explications détaillées</li>
             </ul>
 
-            <!-- BOUTON PAYPAL -->
-            <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50">
+            <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50 min-h-[150px]">
                  <div id="paypal-button-container"></div>
             </div>
         </div>
         </div>
     </section>
 
-    <!-- SCRIPT UNIQUE (Corrigé) -->
     <script>
-        // --- 1. CONFIGURATION SUPABASE (REMPLIS ICI) ---
+        // --- 1. CONFIGURATION SUPABASE ---
         const SUPABASE_URL = 'https://vaxxxlimcusqjoppnqzb.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable__0ibPusHK6BcKGZowZnSog__XNZY72G';
-        // ------------------------------------------------
 
-        // Initialisation de Supabase (Une seule fois)
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let supabase;
 
-        function generateLicenseKey() {
-            return 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        }
-
-        // --- 2. CONFIGURATION PAYPAL ---
-        paypal.Buttons({
-            style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
-            
-            createSubscription: function(data, actions) {
-                return actions.subscription.create({
-                    plan_id: 'P-1M467222SD327415YNFMBTYA' // Ton Plan ID
-                });
-            },
-
-            onApprove: async function(data, actions) {
-                // Création de la clé
-                const newKey = generateLicenseKey();
-                const expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
-
-                // Envoi à Supabase
-                const { error } = await supabase
-                    .from('licenses')
-                    .insert([{ 
-                        key: newKey, 
-                        expires_at: expiryDate.toISOString(),
-                        is_active: true
-                    }]);
-
-                if (error) {
-                    console.error("Erreur Supabase:", error);
-                    // On redirige quand même en cas d'erreur technique
-                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
-                } else {
-                    // Succès total
-                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
-                }
-            },
-
-            onError: function (err) {
-                console.error('Erreur PayPal:', err);
+        window.onload = function() {
+            // Initialisation de Supabase
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } catch (e) {
+                console.error("Erreur d'initialisation Supabase:", e);
             }
-        }).render('#paypal-button-container');
+
+            // --- 2. CONFIGURATION PAYPAL ---
+            if (window.paypal) {
+                paypal.Buttons({
+                    style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+                    
+                    createSubscription: function(data, actions) {
+                        return actions.subscription.create({
+                            plan_id: 'P-1M467222SD327415YNFMBTYA' 
+                        });
+                    },
+
+                    onApprove: async function(data, actions) {
+                        const newKey = 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                        const expiryDate = new Date();
+                        expiryDate.setDate(expiryDate.getDate() + 30);
+
+                        // Envoi à Supabase
+                        if (supabase) {
+                            const { error } = await supabase
+                                .from('licenses')
+                                .insert([{ 
+                                    key: newKey, 
+                                    expires_at: expiryDate.toISOString(),
+                                    is_active: true
+                                }]);
+
+                            if (error) console.error("Erreur base de données:", error);
+                        }
+
+                        // Redirection vers le site principal avec la clé
+                        window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                    },
+
+                    onError: function (err) {
+                        console.error('Erreur PayPal:', err);
+                        alert("Un problème est survenu avec le chargement de PayPal.");
+                    }
+                }).render('#paypal-button-container');
+            }
+        };
 
         // Fonction Switch Prix
         function setPrice(type) {
             const price = document.getElementById('price-display');
-            if (type === 'year') { price.innerText = "13,00€"; alert("Offre annuelle pas encore active."); }
-            else { price.innerText = "2,39€"; }
+            const btnMonth = document.getElementById('btn-month');
+            const btnYear = document.getElementById('btn-year');
+
+            if (type === 'year') { 
+                price.innerText = "39,00€"; 
+                btnYear.classList.add('tab-active');
+                btnMonth.classList.remove('tab-active');
+                alert("L'offre annuelle n'est pas encore liée à un plan PayPal.");
+            } else { 
+                price.innerText = "4,00€"; 
+                btnMonth.classList.add('tab-active');
+                btnYear.classList.remove('tab-active');
+            }
         }
     </script>
 </body>
