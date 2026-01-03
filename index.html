@@ -7,8 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SDK PAYPAL -->
+    <!-- SDK PAYPAL (Vérifie bien que le client-id correspond au compte qui a créé le Plan) -->
     <script src="https://www.paypal.com/sdk/js?client-id=Adpd6qG7Tuftlr58Qv6rNHC6p2JsBiLYhxn8rLlrBb0F6vKRc6TpEsubIv4v9juMajVjp7PXGZ49UTrb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    
     <!-- SDK SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -18,6 +19,7 @@
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
             transition: 0.5s; animation: shine 3s infinite;
+            pointer-events: none; /* IMPORTANT : Pour que ça ne bloque pas le clic sur PayPal */
         }
         .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
@@ -76,9 +78,10 @@
                 <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Historique Cloud (Supabase)</li>
             </ul>
 
-            <!-- BOUTON PAYPAL -->
-            <div class="w-full mt-6 bg-white p-2 rounded-xl">
-                 <div id="paypal-button-container-P-1M467222SD327415YNFMBTYA"></div>
+            <!-- BOUTON PAYPAL (CORRIGÉ : Z-INDEX AJOUTÉ) -->
+            <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50">
+                 <!-- J'ai simplifié l'ID pour éviter les erreurs de copie -->
+                 <div id="paypal-button-container"></div>
             </div>
         </div>
         </div>
@@ -86,46 +89,75 @@
 
     <!-- SCRIPT LOGIQUE -->
     <script>
-        // --- CONFIGURATION SUPABASE ---
-        const supabaseUrl = 'TON_URL_SUPABASE'; // 🔴 REMPLACE ÇA
-        const supabaseKey = 'TA_CLE_ANON_KEY';  // 🔴 REMPLACE ÇA
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // --- 🔴 REMPLIS TES INFOS SUPABASE ICI 🔴 ---
+        const supabaseUrl = 'TON_URL_SUPABASE'; 
+        const supabaseKey = 'TA_CLE_ANON_KEY';
+        // ---------------------------------------------
+        
+        // Initialisation sécurisée (évite le crash si clés vides)
+        let supabase;
+        try {
+            if(supabaseUrl && supabaseKey && !supabaseUrl.includes('TON_URL')) {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch(e) { console.error("Erreur init Supabase", e); }
 
         function generateLicenseKey() {
             return 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         }
 
-        paypal.Buttons({
-            style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
-            createSubscription: function(data, actions) {
-                return actions.subscription.create({
-                    plan_id: 'P-1M467222SD327415YNFMBTYA'
-                });
-            },
-            onApprove: async function(data, actions) {
-                // 1. Générer la clé
-                const newKey = generateLicenseKey();
-                const expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
+        // Rendu du bouton PayPal
+        try {
+            paypal.Buttons({
+                style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+                createSubscription: function(data, actions) {
+                    return actions.subscription.create({
+                        /* Ton ID de plan */
+                        plan_id: 'P-1M467222SD327415YNFMBTYA'
+                    });
+                },
+                onError: function (err) {
+                    // Affiche les erreurs PayPal dans la console (F12)
+                    console.error('Erreur PayPal:', err);
+                    alert("Erreur de chargement PayPal. Vérifiez la console (F12).");
+                },
+                onApprove: async function(data, actions) {
+                    // Si pas de Supabase configuré, on redirige juste (mode dégradé)
+                    if (!supabase) {
+                        alert("Paiement reçu ! (Supabase non configuré, redirection simple)");
+                        window.location.href = `https://homeworksolve.fr/?upgrade_success=true`;
+                        return;
+                    }
 
-                // 2. Insérer dans Supabase
-                const { error } = await supabase
-                    .from('licenses')
-                    .insert([{ 
-                        key: newKey, 
-                        expires_at: expiryDate.toISOString(),
-                        is_active: true
-                    }]);
+                    // 1. Générer la clé
+                    const newKey = generateLicenseKey();
+                    const expiryDate = new Date();
+                    expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
 
-                if (error) {
-                    alert("Erreur activation. Code réf: " + data.subscriptionID);
-                    console.error(error);
-                } else {
-                    // 3. Rediriger avec la clé
-                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                    // 2. Insérer dans Supabase
+                    const { error } = await supabase
+                        .from('licenses')
+                        .insert([{ 
+                            key: newKey, 
+                            expires_at: expiryDate.toISOString(),
+                            is_active: true
+                        }]);
+
+                    if (error) {
+                        console.error("Erreur Supabase:", error);
+                        // On redirige quand même avec la clé pour pas bloquer le client (tu devras l'ajouter à la main)
+                        alert("Paiement validé ! (Erreur technique mineure, contactez le support si besoin)");
+                        window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                    } else {
+                        // 3. Rediriger avec la clé
+                        window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                    }
                 }
-            }
-        }).render('#paypal-button-container-P-1M467222SD327415YNFMBTYA');
+            }).render('#paypal-button-container'); // On cible l'ID simplifié
+        } catch (e) {
+            console.error("Le bouton PayPal n'a pas pu se charger : ", e);
+            document.getElementById('paypal-button-container').innerHTML = "<p style='color:red; text-align:center;'>Erreur de chargement du bouton. Vérifiez le Client ID.</p>";
+        }
 
         function setPrice(type) {
             const price = document.getElementById('price-display');
