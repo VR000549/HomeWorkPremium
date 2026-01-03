@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeWorkSolve Premium - L'élite des étudiants</title>
+    <title>HomeWorkSolve Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SDK PAYPAL (Vérifie bien que le client-id correspond au compte qui a créé le Plan) -->
+    <!-- 1. SDK PAYPAL (Vérifie que c'est le bon Client ID) -->
     <script src="https://www.paypal.com/sdk/js?client-id=Adpd6qG7Tuftlr58Qv6rNHC6p2JsBiLYhxn8rLlrBb0F6vKRc6TpEsubIv4v9juMajVjp7PXGZ49UTrb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
     
-    <!-- SDK SUPABASE -->
+    <!-- 2. SDK SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -18,8 +18,7 @@
         .shine-effect::after {
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s; animation: shine 3s infinite;
-            pointer-events: none; /* IMPORTANT : Pour que ça ne bloque pas le clic sur PayPal */
+            transition: 0.5s; animation: shine 3s infinite; pointer-events: none;
         }
         .tab-active { background: white; color: black; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
@@ -34,16 +33,14 @@
         <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6 italic">
             DEVIENS <span class="text-indigo-600">IMBATTABLE.</span>
         </h1>
-        <p class="text-xl text-slate-500 font-medium max-w-2xl mx-auto">
-            Pourquoi galérer quand tu peux avoir la puissance de Gemini 1.5 Pro dans ta poche ?
-        </p>
     </header>
 
     <section class="px-6 py-12 max-w-5xl mx-auto">
+        <!-- Switch Prix -->
         <div class="flex justify-center mb-12">
             <div class="bg-slate-200 p-1 rounded-2xl flex items-center relative w-72">
-                <button id="btn-month" onclick="setPrice('month')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all tab-active">Mensuel</button>
-                <button id="btn-year" onclick="setPrice('year')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all italic">Annuel</button>
+                <button onclick="setPrice('month')" id="btn-month" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all tab-active">Mensuel</button>
+                <button onclick="setPrice('year')" id="btn-year" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all italic">Annuel</button>
             </div>
         </div>
 
@@ -52,14 +49,12 @@
         <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
             <h3 class="font-bold text-xl mb-2">Version Free</h3>
             <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
-            <ul class="space-y-4 mb-10">
-                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> Modèle IA Basique</li>
-                <li class="flex items-center gap-3 text-sm"><i class="fas fa-check text-green-500"></i> 10 crédits offerts / jour</li>
+            <ul class="space-y-4 mb-10 text-sm">
+                <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> IA Basique</li>
+                <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> 5 crédits / jour</li>
             </ul>
             <a href="https://homeworksolve.fr" class="block">
-                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all shadow-xl">
-                    RESTER GRATUIT
-                </button>
+                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all shadow-xl">RESTER GRATUIT</button>
             </a>
         </div>
 
@@ -73,92 +68,74 @@
             </div>
             
             <ul class="space-y-4 mb-8">
-                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 1.5 Pro</li>
-                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Illimité</li>
-                <li class="flex items-center gap-4"><i class="fas fa-check text-indigo-400"></i> Historique Cloud (Supabase)</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 1.5 Pro</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Illimité</li>
+                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Historique Cloud</li>
             </ul>
 
-            <!-- BOUTON PAYPAL (CORRIGÉ : Z-INDEX AJOUTÉ) -->
+            <!-- BOUTON PAYPAL -->
             <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50">
-                 <!-- J'ai simplifié l'ID pour éviter les erreurs de copie -->
                  <div id="paypal-button-container"></div>
             </div>
         </div>
         </div>
     </section>
 
-    <!-- SCRIPT LOGIQUE -->
+    <!-- SCRIPT UNIQUE (Corrigé) -->
     <script>
-        // --- 🔴 REMPLIS TES INFOS SUPABASE ICI 🔴 ---
-        const supabaseUrl = 'https://vaxxxlimcusqjoppnqzb.supabase.co'; 
-        const supabaseKey = 'sb_publishable__0ibPusHK6BcKGZowZnSog__XNZY72G';
-        // ---------------------------------------------
-        
-        // Initialisation sécurisée (évite le crash si clés vides)
-        let supabase;
-        try {
-            if(supabaseUrl && supabaseKey && !supabaseUrl.includes('TON_URL')) {
-                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            }
-        } catch(e) { console.error("Erreur init Supabase", e); }
+        // --- 1. CONFIGURATION SUPABASE (REMPLIS ICI) ---
+        const SUPABASE_URL = 'https://vaxxxlimcusqjoppnqzb.supabase.co'; 
+        const SUPABASE_KEY = 'sb_publishable__0ibPusHK6BcKGZowZnSog__XNZY72G';
+        // ------------------------------------------------
+
+        // Initialisation de Supabase (Une seule fois)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         function generateLicenseKey() {
             return 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         }
 
-        // Rendu du bouton PayPal
-        try {
-            paypal.Buttons({
-                style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
-                createSubscription: function(data, actions) {
-                    return actions.subscription.create({
-                        /* Ton ID de plan */
-                        plan_id: 'P-1M467222SD327415YNFMBTYA'
-                    });
-                },
-                onError: function (err) {
-                    // Affiche les erreurs PayPal dans la console (F12)
-                    console.error('Erreur PayPal:', err);
-                    alert("Erreur de chargement PayPal. Vérifiez la console (F12).");
-                },
-                onApprove: async function(data, actions) {
-                    // Si pas de Supabase configuré, on redirige juste (mode dégradé)
-                    if (!supabase) {
-                        alert("Paiement reçu ! (Supabase non configuré, redirection simple)");
-                        window.location.href = `https://homeworksolve.fr/?upgrade_success=true`;
-                        return;
-                    }
+        // --- 2. CONFIGURATION PAYPAL ---
+        paypal.Buttons({
+            style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
+            
+            createSubscription: function(data, actions) {
+                return actions.subscription.create({
+                    plan_id: 'P-1M467222SD327415YNFMBTYA' // Ton Plan ID
+                });
+            },
 
-                    // 1. Générer la clé
-                    const newKey = generateLicenseKey();
-                    const expiryDate = new Date();
-                    expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
+            onApprove: async function(data, actions) {
+                // Création de la clé
+                const newKey = generateLicenseKey();
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30); // +30 jours
 
-                    // 2. Insérer dans Supabase
-                    const { error } = await supabase
-                        .from('licenses')
-                        .insert([{ 
-                            key: newKey, 
-                            expires_at: expiryDate.toISOString(),
-                            is_active: true
-                        }]);
+                // Envoi à Supabase
+                const { error } = await supabase
+                    .from('licenses')
+                    .insert([{ 
+                        key: newKey, 
+                        expires_at: expiryDate.toISOString(),
+                        is_active: true
+                    }]);
 
-                    if (error) {
-                        console.error("Erreur Supabase:", error);
-                        // On redirige quand même avec la clé pour pas bloquer le client (tu devras l'ajouter à la main)
-                        alert("Paiement validé ! (Erreur technique mineure, contactez le support si besoin)");
-                        window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
-                    } else {
-                        // 3. Rediriger avec la clé
-                        window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
-                    }
+                if (error) {
+                    console.error("Erreur Supabase:", error);
+                    // On redirige quand même en cas d'erreur technique
+                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
+                } else {
+                    // Succès total
+                    window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
                 }
-            }).render('#paypal-button-container'); // On cible l'ID simplifié
-        } catch (e) {
-            console.error("Le bouton PayPal n'a pas pu se charger : ", e);
-            document.getElementById('paypal-button-container').innerHTML = "<p style='color:red; text-align:center;'>Erreur de chargement du bouton. Vérifiez le Client ID.</p>";
-        }
+            },
 
+            onError: function (err) {
+                console.error('Erreur PayPal:', err);
+            }
+        }).render('#paypal-button-container');
+
+        // Fonction Switch Prix
         function setPrice(type) {
             const price = document.getElementById('price-display');
             if (type === 'year') { price.innerText = "13,00€"; alert("Offre annuelle pas encore active."); }
