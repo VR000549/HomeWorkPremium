@@ -41,110 +41,90 @@
         </div>
 
        <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
-            <h3 class="font-bold text-xl mb-2">Version Free</h3>
-            <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
-            <ul class="space-y-4 mb-10 text-sm">
-                <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> IA Basique</li>
-                <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> 5 crédits / jour</li>
-            </ul>
-            <a href="https://homeworksolve.fr" class="block">
-                <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all shadow-xl">RESTER GRATUIT</button>
-            </a>
-        </div>
-
-        <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
-            <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
-            <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
-            <div class="flex items-baseline gap-2 mb-6">
-                <span id="price-display" class="text-6xl font-black">4,00€</span>
-                <span id="period-display" class="text-slate-400 font-bold">/mois</span>
+            <div class="p-8 rounded-[2.5rem] bg-white border border-slate-200">
+                <h3 class="font-bold text-xl mb-2">Version Free</h3>
+                <div class="text-4xl font-black mb-6">0€<span class="text-lg text-slate-400">/mois</span></div>
+                <ul class="space-y-4 mb-10 text-sm">
+                    <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> IA Basique</li>
+                    <li class="flex gap-3"><i class="fas fa-check text-green-500"></i> 5 scans / jour</li>
+                </ul>
+                <a href="https://homeworksolve.fr" class="block">
+                    <button class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-700 transition-all shadow-xl">RESTER GRATUIT</button>
+                </a>
             </div>
-            
-            <ul class="space-y-4 mb-8">
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 2.0 Flash (Ultra Rapide)</li>
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Scans Illimités</li>
-                <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Explications détaillées</li>
-            </ul>
 
-            <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50 min-h-[150px]">
-                 <div id="paypal-button-container"></div>
+            <div class="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden shine-effect scale-105 border-4 border-indigo-500">
+                <div class="absolute top-0 right-0 bg-indigo-500 px-6 py-2 font-black text-xs rounded-bl-2xl">RECOMMANDÉ</div>
+                <h3 class="font-bold text-2xl mb-2 italic">🌟 MAJOR PREMIUM</h3>
+                <div class="flex items-baseline gap-2 mb-6">
+                    <span id="price-display" class="text-6xl font-black">4,00€</span>
+                    <span id="period-display" class="text-slate-400 font-bold">/mois</span>
+                </div>
+                
+                <ul class="space-y-4 mb-8">
+                    <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Gemini 2.0 Flash (Ultra Rapide)</li>
+                    <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Scans Illimités</li>
+                    <li class="flex gap-4"><i class="fas fa-check text-indigo-400"></i> Explications détaillées</li>
+                </ul>
+
+                <div class="w-full mt-6 bg-white p-4 rounded-xl relative z-50 min-h-[150px]">
+                     <div id="paypal-button-container-P-0UN51170X42573430NFMSF3A"></div>
+                </div>
             </div>
-        </div>
         </div>
     </section>
 
     <script>
-        // --- 1. CONFIGURATION SUPABASE ---
         const SUPABASE_URL = 'https://vaxxxlimcusqjoppnqzb.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable__0ibPusHK6BcKGZowZnSog__XNZY72G';
 
         let supabase;
 
         window.onload = function() {
-            // Initialisation de Supabase
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch (e) {
-                console.error("Erreur d'initialisation Supabase:", e);
-            }
+            } catch (e) { console.error("Erreur Supabase:", e); }
 
-            // --- 2. CONFIGURATION PAYPAL ---
             if (window.paypal) {
                 paypal.Buttons({
                     style: { shape: 'pill', color: 'gold', layout: 'vertical', label: 'subscribe' },
-                    
                     createSubscription: function(data, actions) {
                         return actions.subscription.create({
-                            plan_id: 'P-1M467222SD327415YNFMBTYA' 
+                            plan_id: 'P-0UN51170X42573430NFMSF3A' 
                         });
                     },
-
                     onApprove: async function(data, actions) {
+                        // 1. Générer une clé unique
                         const newKey = 'PREMIUM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
                         const expiryDate = new Date();
                         expiryDate.setDate(expiryDate.getDate() + 30);
 
-                        // Envoi à Supabase
+                        // 2. Sauvegarder dans Supabase
                         if (supabase) {
-                            const { error } = await supabase
-                                .from('licenses')
-                                .insert([{ 
-                                    key: newKey, 
-                                    expires_at: expiryDate.toISOString(),
-                                    is_active: true
-                                }]);
-
-                            if (error) console.error("Erreur base de données:", error);
+                            await supabase.from('licenses').insert([{ 
+                                key: newKey, 
+                                expires_at: expiryDate.toISOString(),
+                                is_active: true
+                            }]);
                         }
 
-                        // Redirection vers le site principal avec la clé
+                        // 3. Rediriger l'utilisateur vers le site principal avec sa clé
                         window.location.href = `https://homeworksolve.fr/?license_key=${newKey}`;
                     },
-
                     onError: function (err) {
                         console.error('Erreur PayPal:', err);
-                        alert("Un problème est survenu avec le chargement de PayPal.");
                     }
-                }).render('#paypal-button-container');
+                }).render('#paypal-button-container-P-0UN51170X42573430NFMSF3A');
             }
         };
 
-        // Fonction Switch Prix
         function setPrice(type) {
             const price = document.getElementById('price-display');
-            const btnMonth = document.getElementById('btn-month');
-            const btnYear = document.getElementById('btn-year');
-
             if (type === 'year') { 
                 price.innerText = "39,00€"; 
-                btnYear.classList.add('tab-active');
-                btnMonth.classList.remove('tab-active');
-                alert("L'offre annuelle n'est pas encore liée à un plan PayPal.");
+                alert("L'offre annuelle arrive bientôt !");
             } else { 
                 price.innerText = "4,00€"; 
-                btnMonth.classList.add('tab-active');
-                btnYear.classList.remove('tab-active');
             }
         }
     </script>
